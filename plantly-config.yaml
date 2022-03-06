@@ -1,0 +1,10 @@
+delegatePattern: true
+developerEmail: martin@martinb.dev
+developerName: Martin
+developerOrganization: martinb.dev
+developerOrganizationUrl: https://martinb.dev
+licenseName: MIT
+licenseUrl: https://opensource.org/licenses/MIT
+#performBeanValidation: true
+#useBeanValidation: true
+useTags: true

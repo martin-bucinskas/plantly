@@ -1,0 +1,447 @@
+openapi: 3.0.3
+info:
+  title: Plantly API
+  description: Plantly API - an API for handling your plants.
+  version: 1.0.0
+servers:
+  - url: 'https://plantly.api.martinb.dev/v1'
+    description: Main (production) server
+tags:
+  - name: plant
+    description: Everything about plants
+  - name: plant-record
+    description: Everything about recording time-series data for plants
+  - name: user
+    description: Everything about users
+
+paths:
+  '/watering-records':
+    get:
+      summary: Returns a list of watering records for a user
+      description: Returns all watering records for a user
+      operationId: getAllWateringRecords
+      tags:
+        - plant-record
+      responses:
+        '200':
+          description: A JSON array of watering records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WateringRecord"
+    post:
+      summary: Create a new watering record
+      description: Create a new watering record for a plant
+      operationId: addWateringRecord
+      tags:
+        - plant-record
+      responses:
+        '201':
+          description: Watering record created
+          headers:
+            Location:
+              schema:
+                type: string
+                description: The location of the created resource
+  '/watering-records/{id}':
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          $ref: "#/components/schemas/Id"
+        description: Watering record id
+    get:
+      summary: Returns a watering record for a user
+      description: Returns a single watering record for a user
+      operationId: getWateringRecord
+      tags:
+        - plant-record
+      responses:
+        '200':
+          description: A JSON representation of a watering record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WateringRecord"
+    delete:
+      summary: Delete a watering record
+      description: Delete a watering record for a plant
+      operationId: deleteWateringRecord
+      tags:
+        - plant-record
+      responses:
+        '204':
+          description: Deleted watering record no content response
+
+  '/plants':
+    get:
+      summary: Returns a list of plants for user
+      description: Returns a list of all registered plants for a user
+      operationId: getAllPlants
+      tags:
+        - plant
+      responses:
+        '200':
+          description: A JSON array of plants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Plant"
+
+    post:
+      summary: Register a new plant
+      description: Register a new plant
+      operationId: registerPlant
+      tags:
+        - plant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Plant"
+      responses:
+        '201':
+          description: Plant registered response
+          headers:
+            Location:
+              schema:
+                type: string
+                description: The location of the created resource
+
+  '/plants/{id}':
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          $ref: "#/components/schemas/Id"
+        description: Plant id
+    get:
+      summary: Get plant details
+      description: Get details of a specific plant
+      operationId: getPlant
+      tags:
+        - plant
+      responses:
+        '200':
+          description: Plant response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Plant"
+    delete:
+      summary: Delete a plant
+      description: Deletes a plant record
+      operationId: deletePlant
+      tags:
+        - plant
+      responses:
+        '204':
+          description: Deleted plant no content response
+    put:
+      summary: Edit details of a plant
+      description: Update the details of a single plant
+      operationId: editPlantData
+      tags:
+        - plant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Plant"
+      responses:
+        '200':
+          description: Successful plant update
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Plant"
+
+  '/plants/{id}/image':
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          $ref: "#/components/schemas/Id"
+        description: Plant id
+    get:
+      summary: Get the plant image
+      description: Get a plant image by id
+      operationId: getPlantImage
+      tags:
+        - plant
+      responses:
+        '200':
+          description: Plant image response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlantImage"
+    post:
+      summary: Set a plant image
+      description: Set an image for a plant
+      operationId: setPlantImage
+      tags:
+        - plant
+      responses:
+        '201':
+          description: Plant image created response
+          headers:
+            Location:
+              schema:
+                type: string
+                description: The location of the created resource
+    delete:
+      summary: Delete a plant image
+      description: Delete a plant image
+      operationId: deletePlantImage
+      tags:
+        - plant
+      responses:
+        '204':
+          description: Deleted plant image response
+
+  /users:
+    get:
+      summary: Get all users
+      description: Get all users
+      operationId: getAllUsers
+      tags:
+        - user
+      responses:
+        '200':
+          description: A list of user ids
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserList"
+    post:
+      summary: Create a new user
+      description: Create and save a new user record
+      operationId: createUser
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '201':
+          description: User created response
+          headers:
+            Location:
+              schema:
+                type: string
+                description: The location of the created resource
+
+  /users/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          $ref: "#/components/schemas/Id"
+        description: User id
+    get:
+      summary: Get a user record
+      description: Get a user record
+      operationId: getUser
+      tags:
+        - user
+      responses:
+        '200':
+          description: User record found response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    delete:
+      summary: Delete a user record
+      description: Delete a user record
+      operationId: deleteUser
+      tags:
+        - user
+      responses:
+        '204':
+          description: Deleted user record response
+    put:
+      summary: Update user record
+      description: Update the user record
+      operationId: updateUser
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '200':
+          description: User record updated response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+components:
+  schemas:
+    Id:
+      type: string
+      format: uuid
+
+    Plant:
+      type: object
+      title: Plant
+      required:
+        - name
+        - scientificName
+        - metadata
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        name:
+          type: string
+          example: "Devils Ivy"
+        scientificName:
+          type: string
+          example: "Epipremnum aureum"
+        imageId:
+          type: string
+          format: uuid
+          example: "eff68180-4cd4-4872-ad1b-82df430dd640"
+        dateAdded:
+          type: string
+          format: date
+        metadata:
+          $ref: "#/components/schemas/PlantMetadata"
+
+    PlantMetadata:
+      type: object
+      title: PlantMetadata
+      required:
+        - soilCondition
+        - lightCondition
+        - waterCondition
+        - wateringFrequency
+      properties:
+        soilCondition:
+          $ref: "#/components/schemas/SoilCondition"
+        lightCondition:
+          $ref: "#/components/schemas/LightCondition"
+        waterCondition:
+          $ref: "#/components/schemas/WaterCondition"
+        wateringFrequency:
+          $ref: "#/components/schemas/WateringFrequency"
+
+    SoilCondition:
+      type: string
+      enum:
+        - sandy
+        - clay
+        - silt
+        - peat
+        - chalk
+        - loam
+
+    LightCondition:
+      type: string
+      enum:
+        - brightDirect
+        - brightIndirect
+        - dark
+
+    WaterCondition:
+      type: string
+      enum:
+        - waterWhenDry
+        - waterFrequently
+
+    WateringFrequency:
+      type: object
+      required:
+        - cronString
+      properties:
+        cronString:
+          type: string
+          example: "30 8 * * 6"
+
+    PlantImage:
+      type: object
+      required:
+        - plantId
+        - data
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        plantId:
+          $ref: "#/components/schemas/Id"
+        data:
+          type: string
+          description: Base64 encoded image data
+        dateAdded:
+          type: string
+          format: date
+        dateUpdated:
+          type: string
+          format: date
+
+    User:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+        dateRegistered:
+          type: string
+          format: date
+        dateLastLoggedIn:
+          type: string
+          format: date
+        plants:
+          type: array
+          items:
+            $ref: "#/components/schemas/Id"
+          format: uuid
+
+    UserList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Id"
+
+    WateringRecord:
+      type: object
+      required:
+        - plantId
+        - amount
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        plantId:
+          $ref: "#/components/schemas/Id"
+        date:
+          type: string
+          format: date
+        amount:
+          type: number
+          minimum: 0
+          maximum: 1000
+          description: Amount of water added (ml)
